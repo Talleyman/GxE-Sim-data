@@ -1,9 +1,12 @@
 #!/usr/bin/Rscript
 
 convert <- function(dir, filename, genEffectRatio){
+  #First, read in data from directory
   setwd(dir)
-  filename <- tools::file_path_sans_ext(filename)
   data <- read.table(filename,sep=",",header=T)
+  filename <- tools::file_path_sans_ext(filename)
+  
+  #Next, create PED file
   ped <- matrix(nrow=nrow(data),ncol=6)
   gen <- matrix(nrow=nrow(data),ncol=nrow(data)*2)
   ped[,1] <- c(rep(1,276),rep(2,276))
@@ -24,7 +27,7 @@ convert <- function(dir, filename, genEffectRatio){
   map <- data.frame(rep(1,nrow(data)),data$Taxa,rep(0,nrow(data)),(1:nrow(data)))
   pheno <- data.frame(c(rep(1,276),rep(2,276)),data$TaxaOrder,data$Phenotype)
   
-  #Finally, write the known-truth file
+  #Finally, write the known-truth file with randomly generated, normally distributed effects
   SNPs <- as.character(sample(data$Taxa,15))
   KTeffects <- rnorm(15, mean=0, sd=0.5)
   knowntruth <- data.frame(SNPs, KTeffects)
