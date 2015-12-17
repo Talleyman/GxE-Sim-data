@@ -44,6 +44,15 @@ convert <- function(dir, filename, genEffectRatio, data_source=c("Maize","Pearl 
   }
   
   #Generate the covariate file
+
+  multicov <- function(x, y, z){
+    covxy <- sd(x)*sd(y)*cor(x,y)
+    covyz <- sd(y)*sd(z)*cor(y,z)
+    covxz <- sd(x)*sd(z)*cor(x,z)
+    final <- sqrt((covxz^2+covyz^2-2*covxy*covxz*covyz)/(1-covxy^2))
+    return(final)
+  }
+
   famID <- c(rep(1,nrow(data)/2),rep(2,nrow(data)/2))
   indID <- data$Taxa
   if (data_type=="SxE"){
@@ -52,6 +61,8 @@ convert <- function(dir, filename, genEffectRatio, data_source=c("Maize","Pearl 
     } else {
       covarvals <- cov(data$SNPPresence, data$EnvPresence)+rnorm(length(famID),mean=0,sd=0.5)
     }
+  } else if (data_type=="QxSxE"){
+    covarvals <- multicov(data$snpPresence, data$envE1Presence, data$BackgroundPresence)
   }
   covar <- data.frame(famID, indID, covarvals)
   
