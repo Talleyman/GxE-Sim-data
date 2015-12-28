@@ -28,6 +28,8 @@ convert <- function(dir, filename, genEffectRatio, data_source=c("Maize","Pearl 
   }
   if (data_type=="QxSxE"){
     gen[,3] <- ifelse(data$BackgroundPresence==1,"A","B")
+  } else {
+    gen[,3] <- sample(LETTERS[1:2],nrow(gen),0.5)
   }
   for (i in 4:ncol(gen)){
     gen[,i] <- sample(LETTERS[1:2],nrow(gen),0.5)
