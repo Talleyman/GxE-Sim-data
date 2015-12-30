@@ -20,11 +20,24 @@ convert <- function(dir, filename, genEffectRatio, data_source=c("Maize","Pearl 
   ped[,4] <- rep(0,nrow(ped))
   ped[,5] <- rep(3,nrow(ped))
   ped[,6] <- data$Phenotype
-  gen[,1] <- ifelse(data$SNPPresence==1, "A","B")
-  if (data_source=="Maize"){
-    gen[,2] <- ifelse(data$Env1Presence==1,"A","B")
+  if (data_source=="Pearl Millet"){
+    gen[,1] <- ifelse(data$snpPresence==1, "A","B")
   } else {
-    gen[,2] <- ifelse(data$EnvPresence==1,"A","B")
+    gen[,1] <- ifelse(data$SNPPresence==1, "A","B")
+  }
+  
+  if (data_source=="Maize"){
+    if (data_type=="QxSxE"){
+      gen[,2] <- ifelse(data$envE1Presence==1,"A","B")
+    } else {
+      gen[,2] <- ifelse(data$Env1Presence==1,"A","B")
+    } 
+    } else if (data_source=="Pearl Millet") {
+      if (data_type=="QxSxE"){
+        gen[,2] <- ifelse(data$envE1Presence==1,"A","B")
+      } else {
+        gen[,2] <- ifelse(data$EnvPresence==1,"A","B")
+      } 
   }
   if (data_type=="QxSxE"){
     gen[,3] <- ifelse(data$BackgroundPresence==1,"A","B")
@@ -64,7 +77,7 @@ convert <- function(dir, filename, genEffectRatio, data_source=c("Maize","Pearl 
       covarvals <- cov(data$SNPPresence, data$EnvPresence)+rnorm(length(famID),mean=0,sd=0.5)
     }
   } else if (data_type=="QxSxE"){
-    covarvals <- multicov(data$snpPresence, data$envE1Presence, data$BackgroundPresence)
+    covarvals <- multicov(data$snpPresence, data$envE1Presence, data$BackgroundPresence)+rnorm(length(famID),mean=0,sd=0.5)
   }
   covar <- data.frame(famID, indID, covarvals)
   
